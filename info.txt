@@ -1,0 +1,11 @@
+"AddonInfo"
+{
+	"name"				"modHud"
+	"version"			"1.00.0"
+	"up_date"			"20.04.2009"
+	"author_name"		"Inspoir"
+	"author_email"		"inspoir@gmail.com"
+	"author_url"		""
+	"info"				"A modular Heads up display."
+	"override"			"0"
+}
