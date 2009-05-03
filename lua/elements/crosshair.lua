@@ -1,7 +1,7 @@
 /*
 	modHud, Modular Heads up display
     Copyright (C) 2009  Inspoir
-	
+
     This file is part of modHud.
 
     modHud is free software: you can redistribute it and/or modify
@@ -15,33 +15,27 @@
 
     You should have received a copy of the GNU General Public License
     along with modHud.  If not, see <http://www.gnu.org/licenses/>.
-	
-	Rev		: 2
-	Desc	: Ammo Display
+
+	Rev		: 1
+	Desc	: Crosshair
 */
 
-local ELEMENT = mhud.New("mHud Ammo")
-local self = LocalPlayer
-ELEMENT.x, ELEMENT.y = ScrW() - 40, ScrH() - 40
+local ELEMENT = mhud.New("mHud Crosshair")
+local self, draw = LocalPlayer, CreateClientConVar("crosshair", "1", false, false)
 
 /*(
-	Desc:	Paints the Ammo Function
+	Desc:	Paints the Crosshair Function
 )*/
 function ELEMENT.Paint()
-	if ( !self():Alive() ) then return end
+	if ( !self():Alive() || !draw:GetBool() ) then return end
 	
-	local w, a = self():GetActiveWeapon()
-	if ( !w:IsWeapon() ) then return end
-	a = self():GetAmmoCount(w:GetPrimaryAmmoType())
+	local x, y, c = ScrW() / 2, ScrH() / 2, Color(255, 255, 255, 220)
 	
-	if ( w:Clip1() > -1 || a > 0 ) then
-		local v = w:Clip1().."/"..a
-		if ( w:Clip1() < 0 ) then v = a end
-		
-		mhud.DrawPanel(4, ELEMENT.x, ELEMENT.y, "AMMO", v)
-	end
+	surface.SetDrawColor(c)
+	surface.DrawLine(x - 3, y, x + 4, y)
+	surface.DrawLine(x, y, x, y + 4)
 end
 
-ELEMENT:AddHook("HUDPaint", ELEMENT.Paint, "mhud_ammo_paint")
+ELEMENT:AddHook("HUDPaint", ELEMENT.Paint, "mhud_crosshair_paint")
 mhud.Register(ELEMENT)
-mhud.Hide({"CHudAmmo", "CHudSecondaryAmmo"})
+mhud.Hide("CHudCrosshair")

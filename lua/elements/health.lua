@@ -16,13 +16,13 @@
     You should have received a copy of the GNU General Public License
     along with modHud.  If not, see <http://www.gnu.org/licenses/>.
 	
-	Rev		: 1.00.0
+	Rev		: 2
 	Desc	: Health Display
 */
 
 local ELEMENT = mhud.New("mHud Health")
 local self = LocalPlayer
-ELEMENT.x, ELEMENT.y, ELEMENT.entries = 40, ScrH() - 80, {}
+ELEMENT.x, ELEMENT.y, ELEMENT.entries = 40, ScrH() - 40, {}
 
 /*(
 	Desc:	Paints the Health Function
@@ -31,7 +31,7 @@ function ELEMENT.Paint()
 	if ( !self():Alive() ) then return end
 	
 	local s = 0
-	mhud.DrawPanel(0, ELEMENT.x, ELEMENT.y, "HEALTH", self():Health())
+	mhud.DrawPanel(3, ELEMENT.x, ELEMENT.y, "HEALTH", self():Health())
 	
 	for i, t in pairs( ELEMENT.entries ) do
 		if ( !t.Spawn || !t.Value || CurTime() - t.Spawn > 3 ) then
@@ -56,3 +56,4 @@ end
 ELEMENT:AddHook("HUDPaint", ELEMENT.Paint, "mhud_health_paint")
 ELEMENT:AddHook("mhud.HealthChanged", ELEMENT.Changed, "mhud_health_changed")
 mhud.Register(ELEMENT)
+mhud.Hide({"CHudHealth", "CHudSuitPower", "CHudBattery"})

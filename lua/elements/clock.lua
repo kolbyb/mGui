@@ -16,13 +16,13 @@
     You should have received a copy of the GNU General Public License
     along with modHud.  If not, see <http://www.gnu.org/licenses/>.
 
-	Rev		: 1.00.0
+	Rev		: 2
 	Desc	: Clock Display
 */
 
 local ELEMENT = mhud.New("mHud Clock")
 local self = LocalPlayer
-ELEMENT.x, ELEMENT.y = ScrW() / 2, ScrH() - 80
+ELEMENT.x, ELEMENT.y = ScrW() / 2, 40
 
 /*(
 	Desc:	Paints the Clock Function

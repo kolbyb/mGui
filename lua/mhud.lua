@@ -16,13 +16,13 @@
     You should have received a copy of the GNU General Public License
     along with modHud.  If not, see <http://www.gnu.org/licenses/>.
 	
-	Rev		: 2
+	Rev		: 3
 	Desc	: modHud base module
 */
 
 module("mhud", package.seeall)
 
-local mt, _elements, _hooks = {}, {}, {}
+local mt, _elements, _hooks, _hidden = {}, {}, {}, {}
 mt.__index = mt
 
 /*(
@@ -39,6 +39,25 @@ function New( n )
 end
 
 /*(
+	Desc:	Hides HUD Elements that might interfere with an mhud element
+	Usage:	Register( "CHudElement" OR { "CHudE1", "CHudE2".. } )
+)*/
+function Hide( e )
+	if ( type(e) == "string" ) then
+		_hidden[e] = false
+	elseif ( type(e) == "table" ) then
+		for _, i in pairs( e ) do
+			_hidden[i] = false
+		end
+	end
+end
+
+local function __hidehook( e )
+	return _hidden[e]
+end
+hook.Add("HUDShouldDraw", "mhud_hide", __hidehook)
+
+/*(
 	Desc:	Function to register a module with mhud
 	Usage:	Register( module )
 )*/
@@ -49,6 +68,13 @@ function Register( m )
 	end
 	
 	_elements[m.Name] = m
+	local c = "mhud_"..m.Name
+	
+	if ( !cookie.GetNumber(c.."_x") || !cookie.GetNumber(c.."_y") ) then
+		cookie.Set(c.."_x", ScrW() / 2)
+		cookie.Set(c.."_y", ScrH() / 2)
+		cookie.Set(c.."_v", false)
+	end
 	
 	/*
 		_elements will be used to register the Element to a table;
@@ -70,11 +96,30 @@ function Register( m )
 end
 
 /*(
+	Desc:	DEBUG Prints out the Elements Table
+)*/
+function Debug()
+	local s, c
+	for _, e in pairs( _elements ) do
+		print(e.Name)
+		for _, i in pairs( e.Hooks ) do
+			c = "mhud_"..e.Name
+			s = string.format("  %i, %i, %s", cookie.GetNumber(c.."_x"), cookie.GetNumber(c.."_y"), cookie.GetString(c.."_v"))
+			print(s)
+			for h, f in pairs( i ) do
+				print(".."..h)
+			end
+		end
+	end
+end
+concommand.Add("mhud_debug", Debug)
+
+/*(
 	Desc:	Draws a panel, var1 and var2 are used for a custom colors/fonts
 	Usage:	DrawPanel( alignment, x, y, name, value, opt var1, opt var2 )
 )*/
 function DrawPanel( a, x, y, n, v, nf, vf )
-	local LEFT, RIGHT, CENTER = 0, 1, 2
+	local LEFT, RIGHT, CENTER, BTLEFT, BTRIGHT, BTCENTER = 0, 1, 2, 3, 4, 5
 	local nf, vf = nf || "UiBold", vf || "MHUDFont1"
 	local c = {
 		Background	= Color(0, 0, 0, 105),
@@ -88,6 +133,14 @@ function DrawPanel( a, x, y, n, v, nf, vf )
 		x = x - w
 	elseif ( a == CENTER ) then
 		x = x - w / 2
+	elseif ( a == BTLEFT ) then
+		y = y - h
+	elseif ( a == BTRIGHT ) then
+		x = x - w
+		y = y - h
+	elseif ( a == BTCENTER ) then
+		x = x - w / 2
+		y = y - h
 	end
 	
 	draw.RoundedBox(4, x, y, w, h, c.Background)

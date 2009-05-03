@@ -1,7 +1,7 @@
 /*
 	modHud, Modular Heads up display
     Copyright (C) 2009  Inspoir
-	
+
     This file is part of modHud.
 
     modHud is free software: you can redistribute it and/or modify
@@ -15,33 +15,24 @@
 
     You should have received a copy of the GNU General Public License
     along with modHud.  If not, see <http://www.gnu.org/licenses/>.
-	
-	Rev		: 2
-	Desc	: Ammo Display
+
+	Rev		: 1
+	Desc	: Frames per second display
 */
 
-local ELEMENT = mhud.New("mHud Ammo")
+local ELEMENT = mhud.New("mHud Fps")
 local self = LocalPlayer
-ELEMENT.x, ELEMENT.y = ScrW() - 40, ScrH() - 40
 
 /*(
-	Desc:	Paints the Ammo Function
+	Desc:	Paints the Fps Function
 )*/
 function ELEMENT.Paint()
-	if ( !self():Alive() ) then return end
+	local x, y, c = ScrW() / 2, ScrH() - 40, Color(0, 255, 0, 255)
+	local f, p = math.floor(1 / RealFrameTime()), self():Ping()
 	
-	local w, a = self():GetActiveWeapon()
-	if ( !w:IsWeapon() ) then return end
-	a = self():GetAmmoCount(w:GetPrimaryAmmoType())
-	
-	if ( w:Clip1() > -1 || a > 0 ) then
-		local v = w:Clip1().."/"..a
-		if ( w:Clip1() < 0 ) then v = a end
-		
-		mhud.DrawPanel(4, ELEMENT.x, ELEMENT.y, "AMMO", v)
-	end
+	//draw.SimpleText(math.floor(1 / FrameTime()), "MHUDFont2", x, y, c, 2, 3)
+	mhud.DrawPanel(5, x, y, "PERFORMANCE", f.." : "..p, nil, "MHUDFont2")
 end
 
-ELEMENT:AddHook("HUDPaint", ELEMENT.Paint, "mhud_ammo_paint")
+ELEMENT:AddHook("HUDPaint", ELEMENT.Paint, "mhud_fps_paint")
 mhud.Register(ELEMENT)
-mhud.Hide({"CHudAmmo", "CHudSecondaryAmmo"})
