@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with modHud.  If not, see <http://www.gnu.org/licenses/>.
 
-	Rev		: 1
+	Rev		: 2
 	Desc	: Frames per second display
 */
 
@@ -27,11 +27,8 @@ local self = LocalPlayer
 	Desc:	Paints the Fps Function
 )*/
 function ELEMENT.Paint()
-	local x, y, c = ScrW() / 2, ScrH() - 40, Color(0, 255, 0, 255)
-	local f, p = math.floor(1 / RealFrameTime()), self():Ping()
-	
-	//draw.SimpleText(math.floor(1 / FrameTime()), "MHUDFont2", x, y, c, 2, 3)
-	mhud.DrawPanel(5, x, y, "PERFORMANCE", f.." : "..p, nil, "MHUDFont2")
+	local x, y = ScrW() / 2, ScrH() - 40
+	mhud.DrawProgress(5, x, y, 180, 4, math.floor(1 / RealFrameTime()), 300, true)
 end
 
 ELEMENT:AddHook("HUDPaint", ELEMENT.Paint, "mhud_fps_paint")

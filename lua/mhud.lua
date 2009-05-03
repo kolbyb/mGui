@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with modHud.  If not, see <http://www.gnu.org/licenses/>.
 	
-	Rev		: 3
+	Rev		: 4
 	Desc	: modHud base module
 */
 
@@ -24,6 +24,13 @@ module("mhud", package.seeall)
 
 local mt, _elements, _hooks, _hidden = {}, {}, {}, {}
 mt.__index = mt
+
+local LEFT, RIGHT, CENTER, BTLEFT, BTRIGHT, BTCENTER = 0, 1, 2, 3, 4, 5
+local colors = {
+	Background	= Color(0, 0, 0, 105),
+	Text		= Color(255, 188, 0, 240),
+	Value		= Color(255, 255, 255, 200)
+}
 
 /*(
 	Desc:	Creates a new module table to be used with mhud
@@ -114,21 +121,7 @@ function Debug()
 end
 concommand.Add("mhud_debug", Debug)
 
-/*(
-	Desc:	Draws a panel, var1 and var2 are used for a custom colors/fonts
-	Usage:	DrawPanel( alignment, x, y, name, value, opt var1, opt var2 )
-)*/
-function DrawPanel( a, x, y, n, v, nf, vf )
-	local LEFT, RIGHT, CENTER, BTLEFT, BTRIGHT, BTCENTER = 0, 1, 2, 3, 4, 5
-	local nf, vf = nf || "UiBold", vf || "MHUDFont1"
-	local c = {
-		Background	= Color(0, 0, 0, 105),
-		Text		= Color(255, 188, 0, 240),
-		Value		= Color(255, 255, 255, 200)
-	}
-	local w, h = ilib.GetStringSize(vf, v)
-	w = w + 10; if ( #n > 0 ) then w = w + ilib.GetStringSize(nf, n) + 10 end
-	
+local function __align( a, x, y, w, h )
 	if ( a == RIGHT ) then
 		x = x - w
 	elseif ( a == CENTER ) then
@@ -143,9 +136,42 @@ function DrawPanel( a, x, y, n, v, nf, vf )
 		y = y - h
 	end
 	
-	draw.RoundedBox(4, x, y, w, h, c.Background)
-	draw.SimpleText(n, nf, x + 10, y + h / 2, c.Text, 3, 1)
-	draw.SimpleText(v, vf, x + w - 5, y + h / 2, c.Value, 2, 1)
+	return x, y, w, h
+end
+
+/*(
+	Desc:	Draws a panel, nf and vf are used for a custom fonts
+	Usage:	DrawPanel( alignment, x, y, name, value, opt var1, opt var2 )
+)*/
+function DrawPanel( a, x, y, n, v, nf, vf )
+	local nf, vf = nf || "UiBold", vf || "MHUDFont1"
+	local w, h = ilib.GetStringSize(vf, v)
+	w = w + 10; if ( #n > 0 ) then w = w + ilib.GetStringSize(nf, n) + 10 end
+	
+	x, y, w, h = __align(a, x, y, w, h)
+	
+	draw.RoundedBox(4, x, y, w, h, colors.Background)
+	draw.SimpleText(n, nf, x + 10, y + h / 2, colors.Text, 3, 1)
+	draw.SimpleText(v, vf, x + w - 5, y + h / 2, colors.Value, 2, 1)
+end
+
+/*(
+	Desc:	Draws a Progress Bar
+	Usage:	DrawProgress( alignment, x, y, width, height, value, maxvalue, text )
+)*/
+function DrawProgress( a, x, y, w, h, v, mv, t )
+	if ( mv < v ) then mv = v end
+	
+	x, y, w, h = __align(a, x, y, w, h)
+	
+	surface.SetDrawColor(colors.Background)
+		surface.DrawRect(x - 1, y - 1, w + 2, h + 2)
+	surface.SetDrawColor(colors.Text)
+		surface.DrawRect(x, y, w * v / mv, h)
+	
+	if ( t ) then
+		draw.SimpleText(v, "DefaultFixedOutline", x, y, colors.Value, 3, 1)
+	end
 end
 
 // Element Meta methods (
