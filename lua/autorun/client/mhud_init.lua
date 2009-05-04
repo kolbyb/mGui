@@ -16,12 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with modHud.  If not, see <http://www.gnu.org/licenses/>.
 	
-	Rev		: 1.00.0
+	Rev		: 2
 	Desc	: Initializes modHud's modules and hooks
 */
 
 surface.CreateFont("frankleinbook", 30, 400, true, false, "MHUDFont1")
-surface.CreateFont("frankleinbook", 18, 400, true, false, "MHUDFont2")
+surface.CreateFont("frankleinbook", 20, 300, true, false, "MHUDFont2")
 
 print("modHud Loading..")
 include("ilib.lua")

@@ -1,5 +1,5 @@
 /*
-	Rev		: 1.00.0
+	Rev		: 1
 	Desc	: ELEMENT DESCRIPTION
 */
 
@@ -15,3 +15,4 @@ end
 
 ELEMENT:AddHook("HOOKNAME", Function, OPTIONAL "NAME")
 mhud.Register(ELEMENT)
+-- mhud.Hide("ONE"); mhud.Hide({"ONE", "TWO", "THREE"})

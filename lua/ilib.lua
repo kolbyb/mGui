@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with modHud.  If not, see <http://www.gnu.org/licenses/>.
 	
-	Rev		: 1
+	Rev		: 2
 	Desc	: Inspoir Library
 */
 
@@ -42,4 +42,13 @@ end
 function GetStringSize( f, s )
 	surface.SetFont(f)
 	return surface.GetTextSize(s)
+end
+
+/*(
+	Desc:	Rotates an x, y point
+	Usage:	RotatePoint( x, y, degrees ) 
+)*/
+function RotatePoint( x, y, d )
+	-- Returns x, y
+	return math.cos(d) * x - (math.sin(d) * y), math.sin(d) * x + (math.cos(d) * y)
 end
